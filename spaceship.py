@@ -1,4 +1,8 @@
 import turtle
+from projectiles import OnScreenBullets
+from missil import Missil
+
+spaceship_bullets = OnScreenBullets(max_on_screen=3)
 
 
 class Spaceship(turtle.Turtle):
@@ -7,7 +11,8 @@ class Spaceship(turtle.Turtle):
         aliens"""
         super().__init__()
         self.window_size = window_size
-        self.shape('triangle')
+        #self.shape('triangle')
+        self.shape('assets/images/spaceship_2.gif')
         self.color('white')
         self.setheading(90)
         self.penup()
@@ -20,7 +25,8 @@ class Spaceship(turtle.Turtle):
         self.shapesize(stretch_wid=ship_stretch_wid,
                        stretch_len=ship_stretch_len)
         margin = 30
-        self.goto(y=(-window_size[1]/2)+margin, x=0)
+        self.initial_position = (0, (-window_size[1]/2)+margin)
+        self.goto(y=self.initial_position[1], x=self.initial_position[0])
 
     def move_right(self):
         if abs(self.xcor() + 20 + self.x_margin) < (self.window_size[0] - self.ship_length)/2:
@@ -31,4 +37,18 @@ class Spaceship(turtle.Turtle):
         if abs(self.xcor() - 20 - self.x_margin) < (self.window_size[0] - self.ship_length)/2:
             new_x = self.xcor() - 20
             self.goto(x=new_x, y=self.ycor())
+
+    def shoot(self):
+        new_missil = Missil(x=self.xcor(), y=self.ycor())
+        spaceship_bullets.add_new(new_missil)
+
+    def collision_detection(self, bullet: OnScreenBullets):
+        for missil in bullet.projectiles:
+            if self.distance(missil) < 20:
+                self.goto(x=self.window_size[0], y=self.window_size[1])
+                bullet.remove_bullet(missil)
+                self.goto(x=self.initial_position[0], y=self.initial_position[1])
+                return
+
+
 

@@ -18,6 +18,8 @@ class Spaceship(turtle.Turtle):
         self.penup()
         self.x_margin = 10
 
+        self.lives = 3
+
         ship_stretch_wid = 2
         ship_stretch_len = 2
         self.ship_length = ship_stretch_len * 20
@@ -42,13 +44,15 @@ class Spaceship(turtle.Turtle):
         new_missil = Missil(x=self.xcor(), y=self.ycor())
         spaceship_bullets.add_new(new_missil)
 
-    def collision_detection(self, bullet: OnScreenBullets):
+    def collision_detection(self, bullet: OnScreenBullets) -> bool:
         for missil in bullet.projectiles:
             if self.distance(missil) < 20:
                 self.goto(x=self.window_size[0], y=self.window_size[1])
                 bullet.remove_bullet(missil)
                 self.goto(x=self.initial_position[0], y=self.initial_position[1])
-                return
+                return True
+
+        return False
 
 
 
